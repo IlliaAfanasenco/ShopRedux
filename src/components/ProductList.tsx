@@ -13,14 +13,21 @@ const ProductList = () => {
 
     return (
         <div>
-            {products.map((product) => (
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
                 <div>
-                    <h2>{product.title}</h2>
-                    <h3>{product.description}</h3>
-                    <p>{product.price}</p>
-                    <p>{product.rating}</p>
+                    {products.map((product) => (
+                            <div key={product.id}>
+                                <h2>{product.title}</h2>
+                                <h3>{product.description}</h3>
+                                <p>{product.price}</p>
+                                <p>{product.rating}</p>
+                            </div>
+                        ))}
                 </div>
-            ))}
+            )}
+            {error && <p>error: {error}</p>}
         </div>
     );
 };
