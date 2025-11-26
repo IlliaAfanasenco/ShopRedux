@@ -16,7 +16,7 @@ const initialState: ProductState = {
     error: null
 }
 
-export const loadProducts = createAsyncThunk("products/loadProducts", async () => {
+export const  loadProducts = createAsyncThunk("products/loadProducts", async () => {
     const data = await getAllProducts()
     return data
 })
