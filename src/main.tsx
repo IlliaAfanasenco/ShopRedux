@@ -6,6 +6,7 @@ import {Provider} from "react-redux";
 import {store} from "./redux/store.ts";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import HomePage from "./pages/HomePage.tsx";
+import ProductPage from "./pages/ProductPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
                 index: true,
                 element: <HomePage/>
             },
+            {
+                path: 'product/:id',
+                element: <ProductPage/>
+            }
 
         ]
     }

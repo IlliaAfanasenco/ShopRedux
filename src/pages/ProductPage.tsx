@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import type {AppDispatch, RootState} from "../redux/store.ts";
 import {useEffect} from "react";
-import {loadProductById, loadProducts} from "../redux/productListSlice.ts";
+import {loadProductById} from "../redux/productListSlice.ts";
 import {useParams} from "react-router-dom";
 
 const ProductPage = () => {

@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {loadProducts} from "../redux/productListSlice.ts";
 import type {AppDispatch, RootState} from "../redux/store.ts";
+import {Link} from "react-router-dom";
 
 const ProductList = () => {
     const {products, loading, error} = useSelector((state: RootState)=> state.products)
@@ -23,6 +24,7 @@ const ProductList = () => {
                                 <h3>{product.description}</h3>
                                 <p>{product.price}</p>
                                 <p>{product.rating}</p>
+                                <Link to={`product/${product.id}`}>info</Link>
                             </div>
                         ))}
                 </div>
