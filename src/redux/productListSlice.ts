@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import type {Product} from "../types/product.ts";
-import {getAllProducts, getOneProduct} from "../api/product.ts";
+import {getAllProducts, getOneProduct, searchProduct} from "../api/product.ts";
 
 export type ProductState = {
     products: Product[],
@@ -26,6 +26,12 @@ export const loadProductById = createAsyncThunk("products/loadProductById", asyn
     return data
 })
 
+export  const productSearch = createAsyncThunk("products/productSearch", async (query: string)=>{
+    const data = await searchProduct(query)
+    return data
+})
+
+export  const productFilter = createAsyncThunk("products")
 const productListSlice = createSlice({
     name: 'products',
     initialState,
@@ -53,6 +59,18 @@ const productListSlice = createSlice({
                 state.selected = action.payload
             })
             .addCase(loadProductById.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error.message ?? "Error"
+            })
+            .addCase(productSearch.pending, state => {
+            state.loading = true
+            state.error = null
+        })
+            .addCase(productSearch.fulfilled, (state, action) => {
+                state.loading = false
+                state.products = action.payload
+            })
+            .addCase(productSearch.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message ?? "Error"
             })
