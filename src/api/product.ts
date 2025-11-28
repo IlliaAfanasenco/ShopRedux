@@ -18,7 +18,7 @@ export async function searchProduct(query: string) {
 }
 
 export  async  function getAllCategory (){
-    const  res = await api.get("/products/categories")
+    const  res = await api.get("/products/category-list")
     return res.data
 
 }
