@@ -1,12 +1,13 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import type {Product} from "../types/product.ts";
-import {getAllCategory, getAllProducts, getOneProduct, searchProduct} from "../api/product.ts";
+import {getAllCategory, getAllProducts, getOneProduct, getProductByCategory, searchProduct} from "../api/product.ts";
 
 export type ProductState = {
     products: Product[],
     loading: boolean,
     selected: Product | null,
-    error: null | string
+    error: null | string,
+    selectedCategory: string | null
     categories: string[]
 }
 
@@ -14,6 +15,7 @@ const initialState: ProductState = {
     products: [],
     selected: null,
     loading: false,
+    selectedCategory: null,
     error: null,
     categories: []
 }
@@ -38,6 +40,10 @@ export const loadCategory = createAsyncThunk("products/loadCategory", async () =
     return data
 })
 
+export const loadByProductCategory = createAsyncThunk("products/loadByProductCategory", async (category: string) => {
+    const data = await getProductByCategory(category)
+    return data
+})
 const productListSlice = createSlice({
     name: 'products',
     initialState,
@@ -89,6 +95,19 @@ const productListSlice = createSlice({
                 state.categories = action.payload
             })
             .addCase(loadCategory.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error.message ?? 'Error'
+            })
+            .addCase(loadByProductCategory.pending, state => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(loadByProductCategory.fulfilled, (state, action) => {
+                state.loading = false
+                state.selectedCategory = action.meta.arg
+                state.products = action.payload
+            })
+            .addCase(loadByProductCategory.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message ?? 'Error'
             })

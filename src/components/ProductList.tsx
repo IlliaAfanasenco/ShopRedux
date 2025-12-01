@@ -5,7 +5,7 @@ import type {AppDispatch, RootState} from "../redux/store.ts";
 import {Link} from "react-router-dom";
 
 const ProductList = () => {
-    const {products, loading, error} = useSelector((state: RootState)=> state.products)
+    const {products, loading, error, categories, selectedCategory} = useSelector((state: RootState)=> state.products)
     const  dispatch:AppDispatch = useDispatch()
 
     useEffect(() => {

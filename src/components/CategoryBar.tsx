@@ -1,22 +1,27 @@
 import {useDispatch, useSelector} from "react-redux";
 import type {AppDispatch, RootState} from "../redux/store.ts";
 import {useEffect} from "react";
-import {loadCategory} from "../redux/productListSlice.ts";
+import {loadByProductCategory, loadCategory, loadProductById} from "../redux/productListSlice.ts";
 
 
 const CategoryBar = () => {
-    const {categories, loading, error} = useSelector((state: RootState) => state.products)
+    const {categories, selectedCategory} = useSelector((state: RootState) => state.products)
     const dispatch: AppDispatch = useDispatch()
 
     useEffect(() => {
         dispatch(loadCategory())
     }, [dispatch]);
+
+
+    const handleChange = (event)=>{
+        const value = event.target.value
+        dispatch(loadByProductCategory(value))
+    }
+
     return (
         <div>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <select>
+
+                <select value={selectedCategory ?? 'all'} onChange={handleChange}>
                     <option value={"all"}>
                         all categ
                     </option>
@@ -26,8 +31,7 @@ const CategoryBar = () => {
                         </option>
                     ))}
                 </select>
-            )}
-            {error && <p>error: {error}</p>}
+
         </div>
     );
 };

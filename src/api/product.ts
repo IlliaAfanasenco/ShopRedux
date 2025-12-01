@@ -22,3 +22,7 @@ export  async  function getAllCategory (){
     return res.data
 
 }
+export async function  getProductByCategory (category : string){
+    const res = await api.get(`/products/category/${category}`)
+    return res.data.products
+}
