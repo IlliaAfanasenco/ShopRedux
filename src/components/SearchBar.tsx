@@ -10,7 +10,7 @@ const SearchBar = () => {
 
     function handleSumbmit(e) {
         e.preventDefault()
-        dispatch(productSearch(query))
+        dispatch(productSearch({query, page:1, limit: 10}))
     }
 
     function handleChange(e) {

@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import type {Product} from "../types/product.ts";
+import type {Product, ProductResponce} from "../types/product.ts";
 import {getAllCategory, getAllProducts, getOneProduct, getProductByCategory, searchProduct} from "../api/product.ts";
 
 export type ProductState = {
@@ -7,8 +7,14 @@ export type ProductState = {
     loading: boolean,
     selected: Product | null,
     error: null | string,
+
     selectedCategory: string | null
     categories: string[]
+    query: string | null
+
+    page: number
+    limit: number
+    total: number
 }
 
 const initialState: ProductState = {
@@ -16,12 +22,23 @@ const initialState: ProductState = {
     selected: null,
     loading: false,
     selectedCategory: null,
-    error: null,
-    categories: []
+    error: '',
+    categories: [],
+    query: null,
+
+    page: 1,
+    limit: 10,
+    total: 0
 }
 
-export const loadProducts = createAsyncThunk("products/loadProducts", async () => {
-    const data = await getAllProducts()
+export const loadProducts = createAsyncThunk<ProductResponce, {
+    page: number;
+    limit: number
+}>("products/loadProducts", async (params) => {
+    const page = params.page ?? 1
+    const limit = params.limit ?? 10
+
+    const data = await getAllProducts(page, limit)
     return data
 })
 
@@ -30,8 +47,12 @@ export const loadProductById = createAsyncThunk("products/loadProductById", asyn
     return data
 })
 
-export const productSearch = createAsyncThunk("products/productSearch", async (query: string) => {
-    const data = await searchProduct(query)
+export const productSearch = createAsyncThunk<ProductResponce, {
+    query: string;
+    page: number;
+    limit: number
+}>("products/productSearch", async ({query, page = 1, limit = 10}) => {
+    const data = await searchProduct(query, page, limit)
     return data
 })
 
@@ -40,8 +61,13 @@ export const loadCategory = createAsyncThunk("products/loadCategory", async () =
     return data
 })
 
-export const loadByProductCategory = createAsyncThunk("products/loadByProductCategory", async (category: string) => {
-    const data = await getProductByCategory(category)
+export const loadByProductCategory = createAsyncThunk<ProductResponce, {
+    category: string,
+    page: number,
+    limit: number
+}>
+("products/loadByProductCategory", async ({category, page, limit}) => {
+    const data = await getProductByCategory(category, page, limit)
     return data
 })
 const productListSlice = createSlice({
@@ -56,7 +82,12 @@ const productListSlice = createSlice({
             })
             .addCase(loadProducts.fulfilled, (state, action) => {
                 state.loading = false
-                state.products = action.payload
+                state.products = action.payload.products
+                state.total = action.payload.total
+                state.limit = action.meta.arg.limit ?? state.limit
+                state.page = action.meta.arg.page
+                state.selectedCategory = null
+                state.query = ''
             })
             .addCase(loadProducts.rejected, (state, action) => {
                 state.loading = false
@@ -80,7 +111,13 @@ const productListSlice = createSlice({
             })
             .addCase(productSearch.fulfilled, (state, action) => {
                 state.loading = false
-                state.products = action.payload
+                state.products = action.payload.products
+                state.total = action.payload.total
+                state.limit = action.meta.arg.limit
+                state.page = action.meta.arg.page
+                state.query = action.meta.arg.query
+
+                state.selectedCategory = null
             })
             .addCase(productSearch.rejected, (state, action) => {
                 state.loading = false
@@ -104,8 +141,12 @@ const productListSlice = createSlice({
             })
             .addCase(loadByProductCategory.fulfilled, (state, action) => {
                 state.loading = false
-                state.selectedCategory = action.meta.arg
-                state.products = action.payload
+                state.selectedCategory = action.meta.arg.category
+                state.products = action.payload.products
+                state.total = action.payload.total
+                state.limit = action.meta.arg.limit
+                state.page = action.meta.arg.page
+                state.query = ""
             })
             .addCase(loadByProductCategory.rejected, (state, action) => {
                 state.loading = false

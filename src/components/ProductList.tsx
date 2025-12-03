@@ -3,13 +3,14 @@ import {useEffect} from "react";
 import {loadProducts} from "../redux/productListSlice.ts";
 import type {AppDispatch, RootState} from "../redux/store.ts";
 import {Link} from "react-router-dom";
+import Pagination from "./Pagination.tsx";
 
 const ProductList = () => {
-    const {products, loading, error, categories, selectedCategory} = useSelector((state: RootState)=> state.products)
+    const {products, loading, error, page, limit} = useSelector((state: RootState)=> state.products)
     const  dispatch:AppDispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(loadProducts())
+        dispatch(loadProducts({page, limit}))
     }, [dispatch]);
 
     return (
@@ -30,6 +31,7 @@ const ProductList = () => {
                 </div>
             )}
             {error && <p>error: {error}</p>}
+            <Pagination/>
         </div>
     );
 };

@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import type {AppDispatch, RootState} from "../redux/store.ts";
 import {useEffect} from "react";
-import {loadByProductCategory, loadCategory, loadProductById} from "../redux/productListSlice.ts";
+import {loadByProductCategory, loadCategory, } from "../redux/productListSlice.ts";
 
 
 const CategoryBar = () => {
@@ -15,7 +15,7 @@ const CategoryBar = () => {
 
     const handleChange = (event)=>{
         const value = event.target.value
-        dispatch(loadByProductCategory(value))
+        dispatch(loadByProductCategory({category: value, page: 1, limit: 10}))
     }
 
     return (

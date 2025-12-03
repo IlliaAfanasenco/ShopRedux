@@ -1,8 +1,11 @@
 import {api} from "./api.ts";
 
-export async function getAllProducts() {
-    const res = await api.get("/products")
-    return res.data.products
+export async function getAllProducts(page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit
+    const res = await api.get("/products", {
+        params: {limit, skip}
+    })
+    return res.data
 }
 
 export async function getOneProduct(id: number) {
@@ -10,19 +13,22 @@ export async function getOneProduct(id: number) {
     return res.data
 }
 
-export async function searchProduct(query: string) {
+export async function searchProduct(query: string, page: number, limit: number) {
+    const skip = (page - 1) * limit
     const res = await api.get(`/products/search`, {
-        params: {q: query}
+        params: {q: query, limit, skip}
     })
-   return res.data.products
+    return res.data
 }
 
-export  async  function getAllCategory (){
-    const  res = await api.get("/products/category-list")
+export async function getAllCategory() {
+    const res = await api.get("/products/category-list")
     return res.data
 
 }
-export async function  getProductByCategory (category : string){
-    const res = await api.get(`/products/category/${category}`)
-    return res.data.products
+
+export async function getProductByCategory(category: string, page: number, limit: number) {
+    const skip = (page - 1) * limit
+    const res = await api.get(`/products/category/${category}`, {params: {limit, skip}})
+    return res.data
 }
