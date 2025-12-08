@@ -14,3 +14,5 @@ export type ProductResponce = {
     limit: number,
     query: string
 }
+
+

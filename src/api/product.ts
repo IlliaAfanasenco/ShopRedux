@@ -32,3 +32,4 @@ export async function getProductByCategory(category: string, page: number, limit
     const res = await api.get(`/products/category/${category}`, {params: {limit, skip}})
     return res.data
 }
+
